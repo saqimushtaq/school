@@ -51,3 +51,8 @@ app:
     login:
       max-failed-attempts: 5
       lockout-duration: 300 # 5 minutes in seconds
+
+springdoc:
+  swagger-ui:
+    try-it-out-enabled: true
+    tags-sorter: alpha

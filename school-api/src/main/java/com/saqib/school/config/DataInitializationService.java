@@ -67,7 +67,7 @@ public class DataInitializationService implements CommandLineRunner {
             User adminUser = User.builder()
                     .username(adminUsername)
                     .email("admin@school.com")
-                    .passwordHash(passwordService.encodePassword("admin123"))
+                    .passwordHash(passwordService.encodePassword("Admin123"))
                     .firstName("System")
                     .lastName("Administrator")
                     .status(User.UserStatus.ACTIVE)
