@@ -31,10 +31,10 @@ public class AuditLog {
   @Column(name = "entity_id")
   private Long entityId;
 
-  @Column(name = "old_values")
+  @Column(name = "old_values", length = 1000)
   private String oldValues;
 
-  @Column(name = "new_values")
+  @Column(name = "new_values", length = 1000)
   private String newValues;
 
   @Column(name = "ip_address")
