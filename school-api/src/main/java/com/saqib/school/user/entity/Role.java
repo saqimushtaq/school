@@ -3,6 +3,7 @@ package com.saqib.school.user.entity;
 import com.saqib.school.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Set;
 
@@ -12,7 +13,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class Role extends BaseEntity {
 
   @Column(name = "role_name", unique = true, nullable = false, length = 50)
