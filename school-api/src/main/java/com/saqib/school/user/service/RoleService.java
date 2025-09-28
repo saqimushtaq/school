@@ -58,8 +58,8 @@ public class RoleService {
 
   @Transactional(readOnly = true)
   public PageResponse<RoleResponse> getAllRoles(Pageable pageable) {
-    Page<Role> rolePage = roleRepository.findAll(pageable);
-    return buildPageResponse(rolePage);
+    var rolePage = roleRepository.findAll(pageable).map(roleMapper::toResponse);
+    return PageResponse.from(rolePage);
   }
 
   @Transactional(readOnly = true)
@@ -126,24 +126,5 @@ public class RoleService {
   private Role findRoleById(Long id) {
     return roleRepository.findById(id)
       .orElseThrow(() -> new ResourceNotFoundException("Role", "id", id));
-  }
-
-  private PageResponse<RoleResponse> buildPageResponse(Page<Role> rolePage) {
-    List<RoleResponse> roles = rolePage.getContent()
-      .stream()
-      .map(roleMapper::toResponse)
-      .collect(Collectors.toList());
-
-    return PageResponse.<RoleResponse>builder()
-      .content(roles)
-      .page(rolePage.getNumber())
-      .size(rolePage.getSize())
-      .totalElements(rolePage.getTotalElements())
-      .totalPages(rolePage.getTotalPages())
-      .first(rolePage.isFirst())
-      .last(rolePage.isLast())
-      .hasNext(rolePage.hasNext())
-      .hasPrevious(rolePage.hasPrevious())
-      .build();
   }
 }
