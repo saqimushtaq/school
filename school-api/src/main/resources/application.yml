@@ -1,0 +1,53 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: school-management-system
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=school
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    defer-datasource-initialization: true
+
+  jackson:
+    time-zone: UTC
+    date-format: yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
+
+logging:
+  level:
+    com.saqib.school: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+
+# JWT Configuration
+jwt:
+  secret: mySecretKey123456789012345678901234567890
+  expiration: 86400000 # 24 hours in milliseconds
+  refresh-expiration: 604800000 # 7 days in milliseconds
+
+# Application Configuration
+app:
+  security:
+    password-policy:
+      min-length: 8
+      require-uppercase: true
+      require-lowercase: true
+      require-digits: true
+      require-special-chars: false
+    session:
+      max-concurrent-sessions: 1
+      session-timeout: 3600 # 1 hour in seconds
+    login:
+      max-failed-attempts: 5
+      lockout-duration: 300 # 5 minutes in seconds
