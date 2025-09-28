@@ -37,18 +37,4 @@ public class PageResponse<T> {
       .totalElements(page.getTotalElements())
       .build();
   }
-
-  public static <T, D> PageResponse<D> from(Page<T> page, List<D> content) {
-    return PageResponse.<D>builder()
-      .content(content)
-      .page(page.getNumber())
-      .size(page.getSize())
-      .first(page.isFirst())
-      .last(page.isLast())
-      .hasNext(page.hasNext())
-      .hasPrevious(page.hasPrevious())
-      .totalPages(page.getTotalPages())
-      .totalElements(page.getTotalElements())
-      .build();
-  }
 }
