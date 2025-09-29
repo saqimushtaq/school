@@ -8,15 +8,12 @@ import com.saqib.school.fee.entity.FeeCategory;
 import com.saqib.school.fee.mapper.FeeCategoryMapper;
 import com.saqib.school.fee.model.FeeCategoryRequest;
 import com.saqib.school.fee.model.FeeCategoryResponse;
-import com.saqib.school.fee.model.FeeCategoryUpdateRequest;
 import com.saqib.school.fee.repository.FeeCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,82 +28,75 @@ public class FeeCategoryService {
     public FeeCategoryResponse createFeeCategory(FeeCategoryRequest request) {
         validateCategoryNameUniqueness(request.getCategoryName(), null);
 
-        FeeCategory feeCategory = feeCategoryMapper.toEntity(request);
+        var feeCategory = feeCategoryMapper.toEntity(request);
         feeCategory.setIsActive(true);
 
-        FeeCategory savedCategory = feeCategoryRepository.save(feeCategory);
-        log.info("Fee category created successfully: {}", savedCategory.getCategoryName());
+        feeCategory = feeCategoryRepository.save(feeCategory);
+        log.info("Fee category created successfully: {}", feeCategory.getCategoryName());
 
-        return feeCategoryMapper.toResponse(savedCategory);
+        return feeCategoryMapper.toResponse(feeCategory);
     }
 
     @Transactional(readOnly = true)
     public FeeCategoryResponse getFeeCategoryById(Long id) {
-        FeeCategory feeCategory = findFeeCategoryById(id);
+        var feeCategory = findFeeCategoryById(id);
         return feeCategoryMapper.toResponse(feeCategory);
     }
 
     @Transactional(readOnly = true)
     public FeeCategoryResponse getFeeCategoryByName(String categoryName) {
-        FeeCategory feeCategory = feeCategoryRepository.findByCategoryName(categoryName)
-            .orElseThrow(() -> new ResourceNotFoundException("Fee Category", "categoryName", categoryName));
+        var feeCategory = feeCategoryRepository.findByCategoryName(categoryName)
+                .orElseThrow(() -> new ResourceNotFoundException("Fee Category", "categoryName", categoryName));
         return feeCategoryMapper.toResponse(feeCategory);
     }
 
     @Transactional(readOnly = true)
     public PageResponse<FeeCategoryResponse> getAllFeeCategories(Pageable pageable) {
         var page = feeCategoryRepository.findAll(pageable)
-            .map(feeCategoryMapper::toResponse);
+                .map(feeCategoryMapper::toResponse);
         return PageResponse.from(page);
     }
 
     @Transactional(readOnly = true)
     public PageResponse<FeeCategoryResponse> getActiveFeeCategories(Pageable pageable) {
         var page = feeCategoryRepository.findByIsActive(true, pageable)
-            .map(feeCategoryMapper::toResponse);
+                .map(feeCategoryMapper::toResponse);
         return PageResponse.from(page);
     }
 
-    @Transactional(readOnly = true)
-    public List<FeeCategoryResponse> getAllActiveFeeCategories() {
-        return feeCategoryRepository.findAllActive()
-            .stream()
-            .map(feeCategoryMapper::toResponse)
-            .toList();
-    }
 
     @Transactional(readOnly = true)
     public PageResponse<FeeCategoryResponse> searchFeeCategories(String searchTerm, Pageable pageable) {
         var page = feeCategoryRepository.findBySearchTerm(searchTerm, pageable)
-            .map(feeCategoryMapper::toResponse);
+                .map(feeCategoryMapper::toResponse);
         return PageResponse.from(page);
     }
 
     @Transactional
     @Auditable(action = "UPDATE_FEE_CATEGORY", entityType = "FeeCategory")
-    public FeeCategoryResponse updateFeeCategory(Long id, FeeCategoryUpdateRequest request) {
-        FeeCategory feeCategory = findFeeCategoryById(id);
+    public FeeCategoryResponse updateFeeCategory(Long id, FeeCategoryRequest request) {
+        var feeCategory = findFeeCategoryById(id);
 
         if (request.getCategoryName() != null) {
             validateCategoryNameUniqueness(request.getCategoryName(), id);
         }
 
         feeCategoryMapper.updateEntity(request, feeCategory);
-        FeeCategory updatedCategory = feeCategoryRepository.save(feeCategory);
+        feeCategory = feeCategoryRepository.save(feeCategory);
 
-        log.info("Fee category updated successfully: {}", updatedCategory.getCategoryName());
-        return feeCategoryMapper.toResponse(updatedCategory);
+        log.info("Fee category updated successfully: {}", feeCategory.getCategoryName());
+        return feeCategoryMapper.toResponse(feeCategory);
     }
 
     @Transactional
     @Auditable(action = "TOGGLE_FEE_CATEGORY_STATUS", entityType = "FeeCategory")
     public void toggleFeeCategoryStatus(Long id) {
-        FeeCategory feeCategory = findFeeCategoryById(id);
+        var feeCategory = findFeeCategoryById(id);
         feeCategory.setIsActive(!feeCategory.getIsActive());
         feeCategoryRepository.save(feeCategory);
 
         log.info("Fee category status toggled to {} for: {}",
-                 feeCategory.getIsActive(), feeCategory.getCategoryName());
+                feeCategory.getIsActive(), feeCategory.getCategoryName());
     }
 
     @Transactional
@@ -124,16 +114,16 @@ public class FeeCategoryService {
 
     private FeeCategory findFeeCategoryById(Long id) {
         return feeCategoryRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Fee Category", "id", id));
+                .orElseThrow(() -> new ResourceNotFoundException("Fee Category", "id", id));
     }
 
     private void validateCategoryNameUniqueness(String categoryName, Long excludeId) {
         boolean nameExists = excludeId != null ?
-            feeCategoryRepository.findByCategoryName(categoryName)
-                .map(FeeCategory::getId)
-                .filter(id -> !id.equals(excludeId))
-                .isPresent() :
-            feeCategoryRepository.existsByCategoryName(categoryName);
+                feeCategoryRepository.findByCategoryName(categoryName)
+                        .map(FeeCategory::getId)
+                        .filter(id -> !id.equals(excludeId))
+                        .isPresent() :
+                feeCategoryRepository.existsByCategoryName(categoryName);
 
         if (nameExists) {
             throw new BadRequestException("Fee category name already exists: " + categoryName);

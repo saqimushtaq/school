@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Entity
 @Table(name = "fine_structures", uniqueConstraints = {
@@ -44,7 +45,7 @@ public class FineStructure extends BaseEntity {
     // Helper methods
     public BigDecimal calculateFine(BigDecimal voucherAmount) {
         return switch (fineType) {
-            case PERCENTAGE -> voucherAmount.multiply(fineValue).divide(BigDecimal.valueOf(100));
+            case PERCENTAGE -> voucherAmount.multiply(fineValue).divide(BigDecimal.valueOf(100), RoundingMode.CEILING);
             case FIXED_AMOUNT -> fineValue;
         };
     }

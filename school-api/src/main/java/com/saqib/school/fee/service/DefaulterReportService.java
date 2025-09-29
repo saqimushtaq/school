@@ -6,6 +6,7 @@ import com.saqib.school.fee.model.DefaulterReportRequest;
 import com.saqib.school.fee.model.DefaulterReportResponse;
 import com.saqib.school.fee.repository.FeeVoucherRepository;
 import com.saqib.school.student.entity.Student;
+import com.saqib.school.student.entity.StudentEnrollment;
 import com.saqib.school.student.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class DefaulterReportService {
 
-    private final StudentRepository studentRepository;
     private final FeeVoucherRepository feeVoucherRepository;
     private final DefaulterReportMapper defaulterReportMapper;
 
@@ -54,7 +54,7 @@ public class DefaulterReportService {
                     Student student = entry.getKey();
                     return student.getEnrollments().stream()
                         .filter(enrollment -> enrollment.getStatus() ==
-                            com.saqib.school.student.entity.StudentEnrollment.EnrollmentStatus.ACTIVE)
+                            StudentEnrollment.EnrollmentStatus.ACTIVE)
                         .anyMatch(enrollment -> request.getClassIds().contains(enrollment.getSchoolClass().getId()));
                 })
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));

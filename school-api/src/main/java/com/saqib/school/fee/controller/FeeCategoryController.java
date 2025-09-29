@@ -4,7 +4,6 @@ import com.saqib.school.common.dto.ApiResponse;
 import com.saqib.school.common.dto.PageResponse;
 import com.saqib.school.fee.model.FeeCategoryRequest;
 import com.saqib.school.fee.model.FeeCategoryResponse;
-import com.saqib.school.fee.model.FeeCategoryUpdateRequest;
 import com.saqib.school.fee.service.FeeCategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,8 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/fee-categories")
@@ -82,13 +79,6 @@ public class FeeCategoryController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
-    @GetMapping("/active/all")
-    @PreAuthorize("hasRole('PRINCIPAL') or hasRole('ADMIN_OFFICER') or hasRole('ACCOUNTANT')")
-    @Operation(summary = "Get all active fee categories", description = "Retrieve all active fee categories without pagination")
-    public ResponseEntity<ApiResponse<List<FeeCategoryResponse>>> getAllActiveFeeCategories() {
-        List<FeeCategoryResponse> response = feeCategoryService.getAllActiveFeeCategories();
-        return ResponseEntity.ok(ApiResponse.success(response));
-    }
 
     @GetMapping("/search")
     @PreAuthorize("hasRole('PRINCIPAL') or hasRole('ADMIN_OFFICER') or hasRole('ACCOUNTANT')")
@@ -108,7 +98,7 @@ public class FeeCategoryController {
     @Operation(summary = "Update fee category", description = "Update fee category information")
     public ResponseEntity<ApiResponse<FeeCategoryResponse>> updateFeeCategory(
         @PathVariable Long id,
-        @Valid @RequestBody FeeCategoryUpdateRequest request) {
+        @Valid @RequestBody FeeCategoryRequest request) {
 
         FeeCategoryResponse response = feeCategoryService.updateFeeCategory(id, request);
         return ResponseEntity.ok(ApiResponse.success("Fee category updated successfully", response));

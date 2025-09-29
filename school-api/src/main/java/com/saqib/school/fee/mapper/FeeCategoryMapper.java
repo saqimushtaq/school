@@ -3,7 +3,6 @@ package com.saqib.school.fee.mapper;
 import com.saqib.school.fee.entity.FeeCategory;
 import com.saqib.school.fee.model.FeeCategoryRequest;
 import com.saqib.school.fee.model.FeeCategoryResponse;
-import com.saqib.school.fee.model.FeeCategoryUpdateRequest;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
@@ -26,5 +25,5 @@ public interface FeeCategoryMapper {
     @Mapping(target = "studentDiscounts", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    void updateEntity(FeeCategoryUpdateRequest request, @MappingTarget FeeCategory feeCategory);
+    void updateEntity(FeeCategoryRequest request, @MappingTarget FeeCategory feeCategory);
 }

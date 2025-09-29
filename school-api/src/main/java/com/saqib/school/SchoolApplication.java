@@ -26,7 +26,7 @@ public class SchoolApplication {
   @Bean
   CommandLineRunner runner(PasswordEncoder passwordEncoder) {
     return args -> {
-      IO.println("password: " + passwordEncoder.encode("Admin123"));
+      System.out.println("password: " + passwordEncoder.encode("Admin123"));
     };
   }
 
