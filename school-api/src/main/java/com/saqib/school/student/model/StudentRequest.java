@@ -1,5 +1,6 @@
 package com.saqib.school.student.model;
 
+import com.saqib.school.fee.model.StudentDiscountRequest;
 import com.saqib.school.student.entity.Student;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
@@ -59,4 +61,10 @@ public class StudentRequest {
 
     @NotNull(message = "Class ID is required for enrollment")
     private Long classId;
+
+    @NotNull(message = "At least one guardian is required")
+    @Size(min = 1, message = "At least one guardian is required")
+    private List<StudentGuardianRequest> guardians;
+
+    private List<StudentDiscountRequest> discounts;
 }

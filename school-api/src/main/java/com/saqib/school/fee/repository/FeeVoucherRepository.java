@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +43,11 @@ public interface FeeVoucherRepository extends JpaRepository<FeeVoucher, Long> {
     @Query("SELECT COUNT(fv) FROM FeeVoucher fv WHERE fv.status = 'PENDING'")
     long countPendingVouchers();
 
-    @Query("SELECT SUM(fv.totalAmount) FROM FeeVoucher fv WHERE fv.status = 'PAID' AND fv.paymentDate BETWEEN :startDate AND :endDate")
-    java.math.BigDecimal sumPaidAmountBetweenDates(@Param("startDate") LocalDate startDate,
-                                                   @Param("endDate") LocalDate endDate);
+    @Query("SELECT SUM(fv.totalAmount) FROM FeeVoucher fv WHERE fv.status =: status AND fv.paymentDate BETWEEN :startDate AND :endDate")
+    BigDecimal sumAmountBetweenDatesByStatus(@Param("startDate") LocalDate startDate,
+                                             @Param("endDate") LocalDate endDate, @Param("status") FeeVoucher.VoucherStatus status);
+
+    @Query("SELECT SUM(fv.totalAmount) FROM FeeVoucher fv WHERE fv.status <> 'CANCELLED' AND fv.paymentDate BETWEEN :startDate AND :endDate")
+    BigDecimal sumIssuedAmountBetweenDates(@Param("startDate") LocalDate startDate,
+                                             @Param("endDate") LocalDate endDate);
 }

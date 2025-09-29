@@ -49,6 +49,9 @@ public class StudentDiscountService {
         var currentUser = userService.getCurrentUser();
 
         var studentDiscount = studentDiscountMapper.toEntity(request);
+        studentDiscount.setStudent(student);
+        studentDiscount.setFeeCategory(feeCategory);
+        studentDiscount.setIsActive(true);
         studentDiscount.setCreatedBy(currentUser);
 
         var savedDiscount = studentDiscountRepository.save(studentDiscount);

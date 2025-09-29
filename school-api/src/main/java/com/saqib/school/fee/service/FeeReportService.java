@@ -27,7 +27,7 @@ public class FeeReportService {
         LocalDate endDate = month.atEndOfMonth();
 
         BigDecimal totalCollection = feePaymentRepository.sumAmountBetweenDates(startDate, endDate);
-        BigDecimal totalIssued = feeVoucherRepository.sumPaidAmountBetweenDates(startDate, endDate);
+        BigDecimal totalIssued = feeVoucherRepository.sumIssuedAmountBetweenDates(startDate, endDate);
         long pendingVouchers = feeVoucherRepository.countPendingVouchers();
 
         Map<String, Object> report = new HashMap<>();

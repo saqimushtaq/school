@@ -94,6 +94,10 @@ public class FeeVoucher extends BaseEntity {
                (VoucherStatus.PENDING.equals(status) && dueDate.isBefore(LocalDate.now()));
     }
 
+    public boolean isPending() {
+        return VoucherStatus.PENDING.equals(status);
+    }
+
     public void markAsPaid() {
         this.status = VoucherStatus.PAID;
         this.paymentDate = LocalDate.now();
@@ -103,9 +107,5 @@ public class FeeVoucher extends BaseEntity {
         if (VoucherStatus.PENDING.equals(this.status)) {
             this.status = VoucherStatus.OVERDUE;
         }
-    }
-
-    public void cancel() {
-        this.status = VoucherStatus.CANCELLED;
     }
 }

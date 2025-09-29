@@ -6,6 +6,7 @@ import com.saqib.school.common.audit.Auditable;
 import com.saqib.school.common.dto.PageResponse;
 import com.saqib.school.common.exception.BadRequestException;
 import com.saqib.school.common.exception.ResourceNotFoundException;
+import com.saqib.school.fee.service.StudentDiscountService;
 import com.saqib.school.student.entity.Student;
 import com.saqib.school.student.entity.StudentEnrollment;
 import com.saqib.school.student.entity.StudentGuardian;
@@ -35,10 +36,11 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
     private final StudentEnrollmentRepository enrollmentRepository;
-    private final StudentGuardianRepository guardianRepository;
+    private final StudentGuardianService guardianService;
     private final SchoolClassRepository classRepository;
     private final StudentMapper studentMapper;
     private final StudentEnrollmentService enrollmentService;
+    private final StudentDiscountService studentDiscountService;
 
     @Value("${app.student.registration-number.prefix:STD}")
     private String registrationPrefix;
@@ -62,6 +64,19 @@ public class StudentService {
 
         // Create initial enrollment
         enrollmentService.enrollStudent(savedStudent.getId(), request.getClassId(), request.getAdmissionDate());
+
+        if (request.getGuardians() != null && !request.getGuardians().isEmpty()) {
+            request.getGuardians().forEach(guardian -> {
+                guardianService.addGuardian(savedStudent.getId(), guardian);
+            });
+        }
+
+        if(request.getDiscounts() != null && !request.getDiscounts().isEmpty()) {
+            request.getDiscounts().forEach(discountRequest -> {
+                discountRequest.setStudentId(savedStudent.getId());
+                studentDiscountService.createStudentDiscount(discountRequest);
+            });
+        }
 
         log.info("Student created successfully: {} with registration number: {}",
                 savedStudent.getFullName(), savedStudent.getRegistrationNumber());
@@ -264,10 +279,10 @@ public class StudentService {
         // Define valid status transitions
         boolean isValidTransition = switch (currentStatus) {
             case ACTIVE -> newStatus == Student.StudentStatus.INACTIVE ||
-                         newStatus == Student.StudentStatus.TRANSFERRED ||
-                         newStatus == Student.StudentStatus.GRADUATED;
+                    newStatus == Student.StudentStatus.TRANSFERRED ||
+                    newStatus == Student.StudentStatus.GRADUATED;
             case INACTIVE -> newStatus == Student.StudentStatus.ACTIVE ||
-                           newStatus == Student.StudentStatus.TRANSFERRED;
+                    newStatus == Student.StudentStatus.TRANSFERRED;
             case TRANSFERRED, GRADUATED -> false; // Final states
         };
 

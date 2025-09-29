@@ -1,6 +1,7 @@
 package com.saqib.school.fee.service;
 
 import com.saqib.school.common.audit.Auditable;
+import com.saqib.school.fee.entity.FeeVoucher;
 import com.saqib.school.fee.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,7 @@ public class FeeManagementFacadeService {
     public FeeVoucherResponse processAdmissionFee(Long studentId, List<FeeVoucherRequest.VoucherDetailRequest> feeDetails, LocalDate dueDate) {
         FeeVoucherRequest request = FeeVoucherRequest.builder()
             .studentId(studentId)
-            .voucherType(com.saqib.school.fee.entity.FeeVoucher.VoucherType.ADMISSION)
+            .voucherType(FeeVoucher.VoucherType.ADMISSION)
             .dueDate(dueDate)
             .voucherDetails(feeDetails)
             .notes("Admission fee voucher")
@@ -129,7 +130,7 @@ public class FeeManagementFacadeService {
                 .build()
         );
 
-        Map<String, Object> summary = Map.of(
+        return Map.of(
             "month", month.toString(),
             "collection", collectionReport,
             "defaulterSummary", Map.of(
@@ -138,8 +139,6 @@ public class FeeManagementFacadeService {
             ),
             "generatedOn", LocalDate.now()
         );
-
-        return summary;
     }
 
     @Transactional

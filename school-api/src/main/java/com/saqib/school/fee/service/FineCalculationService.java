@@ -107,7 +107,7 @@ public class FineCalculationService {
         }
 
         // Apply the highest applicable fine
-        FineStructure applicableFine = applicableFines.get(0); // Already ordered DESC
+        FineStructure applicableFine = applicableFines.getFirst(); // Already ordered DESC
         return applicableFine.calculateFine(voucher.getTotalAmount());
     }
 }

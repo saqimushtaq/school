@@ -13,6 +13,7 @@ import com.saqib.school.fee.repository.FeePaymentRepository;
 import com.saqib.school.fee.repository.FeeVoucherRepository;
 import com.saqib.school.user.entity.User;
 import com.saqib.school.user.repository.UserRepository;
+import com.saqib.school.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -31,14 +32,14 @@ public class FeePaymentService {
 
     private final FeePaymentRepository feePaymentRepository;
     private final FeeVoucherRepository feeVoucherRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final FeePaymentMapper feePaymentMapper;
 
     @Transactional
     @Auditable(action = "PROCESS_FEE_PAYMENT", entityType = "FeePayment")
     public FeePaymentResponse processFeePayment(FeePaymentRequest request) {
         FeeVoucher voucher = findFeeVoucherById(request.getVoucherId());
-        User currentUser = getCurrentUser();
+        User currentUser = userService.getCurrentUser();
 
         validatePaymentRequest(request, voucher);
 
@@ -145,11 +146,5 @@ public class FeePaymentService {
     private FeeVoucher findFeeVoucherById(Long id) {
         return feeVoucherRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Fee Voucher", "id", id));
-    }
-
-    private User getCurrentUser() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByUsername(username)
-            .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
     }
 }
