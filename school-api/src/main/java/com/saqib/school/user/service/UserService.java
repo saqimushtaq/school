@@ -263,7 +263,7 @@ public class UserService {
     }
   }
 
-  private User getCurrentUser() {
+  public User getCurrentUser() {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     return userRepository.findByUsername(username).orElse(null);
   }

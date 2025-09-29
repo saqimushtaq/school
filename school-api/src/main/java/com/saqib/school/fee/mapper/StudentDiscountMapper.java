@@ -10,9 +10,9 @@ import org.mapstruct.*;
 public interface StudentDiscountMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "student", ignore = true)
-    @Mapping(target = "feeCategory", ignore = true)
-    @Mapping(target = "isActive", ignore = true)
+    @Mapping(target = "student", source = "studentId")
+    @Mapping(target = "feeCategory", source = "feeCategoryId")
+    @Mapping(target = "isActive", defaultValue = "true")
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
