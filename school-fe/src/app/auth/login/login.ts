@@ -14,16 +14,14 @@ import { ToastsContainer } from "./toasts-container.component";
 export class Login {
 
   private auth = inject(AuthStore)
-  form: FormGroup = inject(FormBuilder).group({
+   form: FormGroup = inject(FormBuilder).group({
     username: ['admin', [Validators.required]],
     password: ['Admin@123', [Validators.required]],
   })
   private router = inject(Router)
-  private toastService = inject(ToastService)
   // Login Form
   submitted = false;
   fieldTextType!: boolean;
-  error = '';
   returnUrl!: string;
 
   toast!: false;

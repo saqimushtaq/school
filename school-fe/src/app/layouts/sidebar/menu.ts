@@ -64,34 +64,16 @@ export const MENU: MenuItem[] = [
   },
   {
     id: 8,
-    label: 'MENUITEMS.APPS.TEXT',
+    label: 'MENUITEMS.ACADEMIC.TEXT',
     icon: 'ri-apps-2-line',
     isCollapsed: true,
     subItems: [
 
-      {
-        id: 9,
-        label: 'MENUITEMS.APPS.LIST.CALENDAR',
-        isCollapsed: true,
-        parentId: 8,
-        subItems: [
-          {
-            id: 9,
-            label: 'MENUITEMS.APPS.LIST.MAINCALENDAR',
-            link: '/calendar',
-          },
-          {
-            id: 9,
-            label: 'MENUITEMS.APPS.LIST.MONTHGRID',
-            link: '/month-grid',
-          }
-        ]
-      },
 
       {
         id: 10,
-        label: 'MENUITEMS.APPS.LIST.CHAT',
-        link: '/chat',
+        label: 'MENUITEMS.ACADEMIC.LIST.SESSIONS',
+        link: '/academic/sessions',
         parentId: 8
       },
       {

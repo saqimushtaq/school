@@ -21,6 +21,12 @@
         "JOB": "Job"
       }
     },
+    "ACADEMIC": {
+      "TEXT": "Academic",
+      "LIST": {
+        "SESSIONS": "Sessions"
+      }
+    },
     "APPS": {
       "TEXT": "Apps",
       "LIST": {

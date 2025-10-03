@@ -35,23 +35,21 @@ export const AuthStore = signalStore(
           authService.login(credentials).pipe(
             tapResponse({
               next: (response) => {
-                if (response.success && response.data) {
-                  patchState(store, {
-                    user: response.data.user,
-                    accessToken: response.data.accessToken,
-                    refreshToken: response.data.refreshToken,
+                patchState(store, {
+                    user: response.user,
+                    accessToken: response.accessToken,
+                    refreshToken: response.refreshToken,
                     isAuthenticated: true,
                     isLoading: false,
                     error: null,
                   });
 
                   // Navigate based on password change requirement
-                  if (response.data.user.mustChangePassword) {
+                  if (response.user.mustChangePassword) {
                     store.router.navigate(['/auth/change-password']);
                   } else {
                     store.router.navigate(['/']);
                   }
-                }
               },
               error: (error: any) => {
                 const errorMessage = error?.error?.message || 'Login failed';
@@ -120,13 +118,11 @@ export const AuthStore = signalStore(
           return authService.refreshToken(refreshToken).pipe(
             tapResponse({
               next: (response) => {
-                if (response.success && response.data) {
-                  patchState(store, {
-                    accessToken: response.data.accessToken,
-                    refreshToken: response.data.refreshToken,
-                    user: response.data.user,
+                patchState(store, {
+                    accessToken: response.accessToken,
+                    refreshToken: response.refreshToken,
+                    user: response.user,
                   });
-                }
               },
               error: () => {
                 patchState(store, initialAuthState);
@@ -147,8 +143,7 @@ export const AuthStore = signalStore(
           authService.changePassword(request).pipe(
             tapResponse({
               next: (response) => {
-                if (response.success) {
-                  const currentUser = store.user();
+                 const currentUser = store.user();
                   if (currentUser) {
                     patchState(store, {
                       user: { ...currentUser, mustChangePassword: false },
@@ -156,7 +151,6 @@ export const AuthStore = signalStore(
                     });
                   }
                   store.router.navigate(['/']);
-                }
               },
               error: (error: any) => {
                 const errorMessage = error?.error?.message || 'Password change failed';

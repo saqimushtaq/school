@@ -14,40 +14,40 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'http://localhost:8080/api/auth';
 
-  login(request: LoginRequest): Observable<ApiResponse<LoginResponse>> {
-    return this.http.post<ApiResponse<LoginResponse>>(`${this.apiUrl}/login`, request);
+  login(request: LoginRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, request);
   }
 
-  refreshToken(refreshToken: string): Observable<ApiResponse<LoginResponse>> {
-    return this.http.post<ApiResponse<LoginResponse>>(
+  refreshToken(refreshToken: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(
       `${this.apiUrl}/refresh`,
       null,
       { headers: { Authorization: `Bearer ${refreshToken}` } }
     );
   }
 
-  logout(token: string): Observable<ApiResponse<string>> {
-    return this.http.post<ApiResponse<string>>(
+  logout(token: string): Observable<string> {
+    return this.http.post<string>(
       `${this.apiUrl}/logout`,
       null,
       { headers: { Authorization: `Bearer ${token}` } }
     );
   }
 
-  changePassword(request: ChangePasswordRequest): Observable<ApiResponse<string>> {
-    return this.http.post<ApiResponse<string>>(`${this.apiUrl}/change-password`, request);
+  changePassword(request: ChangePasswordRequest): Observable<string> {
+    return this.http.post<string>(`${this.apiUrl}/change-password`, request);
   }
 
-  resetPassword(userId: number, newPassword: string): Observable<ApiResponse<string>> {
-    return this.http.post<ApiResponse<string>>(
+  resetPassword(userId: number, newPassword: string): Observable<string> {
+    return this.http.post<string>(
       `${this.apiUrl}/reset-password/${userId}`,
       null,
       { params: { newPassword } }
     );
   }
 
-  validateToken(token: string): Observable<ApiResponse<boolean>> {
-    return this.http.get<ApiResponse<boolean>>(
+  validateToken(token: string): Observable<boolean> {
+    return this.http.get<boolean>(
       `${this.apiUrl}/validate`,
       { headers: { Authorization: `Bearer ${token}` } }
     );

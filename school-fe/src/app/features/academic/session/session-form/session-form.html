@@ -1,0 +1,76 @@
+<div class="modal-header bg-light p-3">
+  <h5 class="modal-title" id="exampleModalLabel">{{isEdit ? 'Edit' : 'Add'}} Session</h5>
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="modal"
+    aria-label="Close"
+    id="close-modal"
+    (click)="modal.dismiss('Cross click')"
+  ></button>
+</div>
+<form
+  (ngSubmit)="save()"
+  [formGroup]="form"
+  class="tablelist-form"
+  autocomplete="off"
+>
+  <div class="modal-body">
+    <div class="mb-3">
+      <label for="sessionname-field" class="form-label">Session Name</label>
+      <input
+        type="text"
+        id="sessionname-field"
+        class="form-control"
+        placeholder="Enter Name"
+        required
+        formControlName="sessionName"
+        [class.is-invalid]="submitted && f['sessionName'].errors"
+      />
+      <div class="invalid-feedback">Please enter a session name.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="start-date-field" class="form-label">Start Date</label>
+      <input
+        type="date"
+        id="start-date-field"
+        class="form-control"
+        placeholder="Enter Start date"
+        required
+        formControlName="startDate"
+        [class.is-invalid]="submitted && f['startDate'].errors"
+      />
+      <div class="invalid-feedback">Please enter an start date.</div>
+    </div>
+
+   <div class="mb-3">
+      <label for="end-date-field" class="form-label">End Date</label>
+      <input
+        type="date"
+        id="end-date-field"
+        class="form-control"
+        placeholder="Enter Start date"
+        required
+        formControlName="endDate"
+        [class.is-invalid]="submitted && f['endDate'].errors"
+      />
+      <div class="invalid-feedback">Please enter an start date.</div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="hstack gap-2 justify-content-end">
+      <button
+        type="button"
+        class="btn btn-light"
+        data-bs-dismiss="modal"
+        (click)="modal.close('Close click')"
+      >
+        Close
+      </button>
+      <button type="submit" class="btn btn-success" id="add-btn">
+        {{isEdit ? 'Edit' : 'Add'}} Session
+      </button>
+    </div>
+  </div>
+</form>
