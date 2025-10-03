@@ -4,28 +4,22 @@ import { Component, DOCUMENT, EventEmitter, inject, Inject, Output, TemplateRef,
 import { Router } from '@angular/router';
 import { allNotification, messages, cartData } from './data';
 import { CartModel } from './topbar.model';
-import { CookieService } from 'ngx-cookie-service';
-import { TranslatePipe } from  '@ngx-translate/core'
-import { LanguageService } from '../../core/language.service';
-import { TokenStorageService } from '../../core/token-storage.service';
 import { LayoutStore } from '../../stores/layout/layout.store';
 import { LayoutMode } from '../../stores/layout/layout-types';
 import { FormsModule } from '@angular/forms';
+import { AuthStore } from '../../stores/auth/auth-store';
 
 @Component({
   selector: 'app-topbar',
   imports: [SimplebarAngularModule, NgbDropdownModule, NgbNavModule, FormsModule,],
   templateUrl: './topbar.html',
-  styles: ``
+  styles: ``,
 })
 export class Topbar {
   private document: any = inject(DOCUMENT)
   private modalService = inject(NgbModal)
   private router = inject(Router)
-  private tokenService = inject(TokenStorageService)
-
-  _cookiesService = inject(CookieService)
-  languageService = inject(LanguageService)
+   auth = inject(AuthStore)
   layout = inject(LayoutStore)
 
 
@@ -38,7 +32,7 @@ export class Topbar {
   valueset: any;
   countryName: any;
   cookieValue: any;
-  userData: any;
+  user = this.auth.user();
   cartData!: CartModel[];
   total = 0;
   cart_length: any = 0;
@@ -52,11 +46,10 @@ export class Topbar {
   constructor() { }
 
   ngOnInit(): void {
-    this.userData = this.tokenService.getUser();
     this.element = document.documentElement;
 
     // Cookies wise Language set
-    this.cookieValue = this._cookiesService.get('lang');
+    this.cookieValue = 'en';
     const val = this.listLang.filter(x => x.lang === this.cookieValue);
     this.countryName = val.map(element => element.text);
     if (val.length === 0) {
@@ -159,13 +152,13 @@ export class Topbar {
     this.countryName = text;
     this.flagvalue = flag;
     this.cookieValue = lang;
-    this.languageService.setLanguage(lang);
   }
 
   /**
    * Logout the user
    */
   logout() {
+    this.auth.logout()
     this.router.navigate(['/auth/login']);
   }
 

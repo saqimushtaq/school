@@ -12,7 +12,7 @@ import { ApiResponse } from '../common-types';
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = '/api/auth';
+  private readonly apiUrl = 'http://localhost:8080/api/auth';
 
   login(request: LoginRequest): Observable<ApiResponse<LoginResponse>> {
     return this.http.post<ApiResponse<LoginResponse>>(`${this.apiUrl}/login`, request);

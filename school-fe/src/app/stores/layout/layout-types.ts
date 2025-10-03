@@ -59,7 +59,7 @@ export const initialState: LayoutState = {
   topbarColor: 'light',
   sidebarSize: 'lg',
   sidebarView: 'default',
-  sidebarColor: 'light',
+  sidebarColor: 'dark',
   sidebarImage: 'none',
   backgroundImage: 'none',
   sidebarVisibility: 'show',

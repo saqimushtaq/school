@@ -1,6 +1,6 @@
 // auth.store.ts
 
-import { signalStore, withState, withMethods, withComputed, withHooks } from '@ngrx/signals';
+import { signalStore, withState, withMethods, withComputed, withHooks, withProps } from '@ngrx/signals';
 import { computed, inject, effect } from '@angular/core';
 import { patchState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
@@ -15,19 +15,18 @@ const AUTH_STORAGE_KEY = 'auth_state';
 export const AuthStore = signalStore(
   { providedIn: 'root' },
   withState<AuthState>(initialAuthState),
+  withProps(() => ({
+    router: inject(Router)
+  })),
   withComputed((store) => ({
     isLoggedIn: computed(() => store.isAuthenticated() && !!store.accessToken()),
-    hasRole: computed(() => (role: string) => {
-      const roles = store.user()?.roles;
-      return roles ? roles.includes(role) : false;
-    }),
     fullName: computed(() => {
       const user = store.user();
       return user ? `${user.firstName} ${user.lastName}` : '';
     }),
     needsPasswordChange: computed(() => store.user()?.mustChangePassword ?? false),
   })),
-  withMethods((store, authService = inject(AuthService), router = inject(Router)) => ({
+  withMethods((store, authService = inject(AuthService)) => ({
     // Login method using rxMethod
     login: rxMethod<LoginRequest>(
       pipe(
@@ -48,9 +47,9 @@ export const AuthStore = signalStore(
 
                   // Navigate based on password change requirement
                   if (response.data.user.mustChangePassword) {
-                    router.navigate(['/auth/change-password']);
+                    store.router.navigate(['/auth/change-password']);
                   } else {
-                    router.navigate(['/']);
+                    store.router.navigate(['/']);
                   }
                 }
               },
@@ -71,6 +70,11 @@ export const AuthStore = signalStore(
       )
     ),
 
+    hasRole: (role: string) => {
+      const roles = store.user()?.roles;
+      return roles ? roles.includes(role) : false;
+    },
+
     // Logout method using rxMethod
     logout: rxMethod<void>(
       pipe(
@@ -79,7 +83,7 @@ export const AuthStore = signalStore(
           const token = store.accessToken();
           if (!token) {
             patchState(store, initialAuthState);
-            router.navigate(['/auth/login']);
+            store.router.navigate(['/auth/login']);
             return [];
           }
 
@@ -88,13 +92,13 @@ export const AuthStore = signalStore(
               next: () => {
                 patchState(store, initialAuthState);
                 clearAuthStorage();
-                router.navigate(['/auth/login']);
+                store.router.navigate(['/auth/login']);
               },
               error: () => {
                 // Even if logout fails on server, clear local state
                 patchState(store, initialAuthState);
                 clearAuthStorage();
-                router.navigate(['/auth/login']);
+                store.router.navigate(['/auth/login']);
               },
             })
           );
@@ -103,13 +107,13 @@ export const AuthStore = signalStore(
     ),
 
     // Refresh token method using rxMethod
-    refreshToken: rxMethod<void>(
+    refreshCurrentToken: rxMethod<void>(
       pipe(
         switchMap(() => {
           const refreshToken = store.refreshToken();
           if (!refreshToken) {
             patchState(store, initialAuthState);
-            router.navigate(['/auth/login']);
+            store.router.navigate(['/auth/login']);
             return [];
           }
 
@@ -127,7 +131,7 @@ export const AuthStore = signalStore(
               error: () => {
                 patchState(store, initialAuthState);
                 clearAuthStorage();
-                router.navigate(['/auth/login']);
+                store.router.navigate(['/auth/login']);
               },
             })
           );
@@ -151,7 +155,7 @@ export const AuthStore = signalStore(
                       isLoading: false,
                     });
                   }
-                  router.navigate(['/']);
+                  store.router.navigate(['/']);
                 }
               },
               error: (error: any) => {

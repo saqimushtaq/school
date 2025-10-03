@@ -38,11 +38,7 @@ export class Rightsidebar {
 
 
   ngOnInit(): void {
-    setTimeout(() => {
-      if (this.offcanvasService.hasOpenOffcanvas() == false) {
-        this.openEnd(this.filtetcontent);
-      };
-    }, 1000);
+
 
       this.layout = this.store.layoutType();
       this.theme = this.store.layoutTheme();
