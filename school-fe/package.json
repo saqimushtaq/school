@@ -18,6 +18,7 @@
     "@angular/router": "^20.0.0",
     "@ng-bootstrap/ng-bootstrap": "^19.0.1",
     "@ng-select/ng-select": "^20.2.2",
+    "@ngrx/operators": "^20.0.1",
     "@ngrx/signals": "^20.0.1",
     "@ngx-translate/core": "^17.0.0",
     "@ngx-translate/http-loader": "^17.0.0",
