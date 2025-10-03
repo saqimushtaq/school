@@ -24,6 +24,7 @@ export type SidebarColor =
   | 'gradient-4';
 
 export type SidebarImage = 'none' | 'img-1' | 'img-2' | 'img-3' | 'img-4';
+export type BackgroundImage = 'none' | 'img-1' | 'img-2' | 'img-3' | 'img-4';
 
 export type SidebarVisibility = 'show' | 'hidden';
 
@@ -42,6 +43,7 @@ export interface LayoutState {
   sidebarView: SidebarView;
   sidebarColor: SidebarColor;
   sidebarImage: SidebarImage;
+  backgroundImage: SidebarImage;
   sidebarVisibility: SidebarVisibility;
   preloader: PreloaderType;
 }
@@ -59,6 +61,7 @@ export const initialState: LayoutState = {
   sidebarView: 'default',
   sidebarColor: 'light',
   sidebarImage: 'none',
+  backgroundImage: 'none',
   sidebarVisibility: 'show',
   preloader: 'disable',
 };

@@ -24,6 +24,7 @@ import {
   PreloaderType,
   LayoutThemeColor,
   LayoutTheme,
+  BackgroundImage,
 } from './layout-types';
 import { effect } from '@angular/core';
 
@@ -86,6 +87,9 @@ export const LayoutStore = signalStore(
     setPreloader(preloader: PreloaderType) {
       patchState(store, { preloader });
     },
+    setBackgroundImage(image: BackgroundImage) {
+      patchState(store, { backgroundImage: image });
+    },
     reset() {
       patchState(store, initialState);
     },
@@ -135,4 +139,8 @@ function applyDomAttributes(data: LayoutState) {
   data.layoutType == "vertical" || data.layoutType == "twocolumn" ? document.documentElement.setAttribute('data-layout-style', data.sidebarView) : '';
   document.documentElement.setAttribute('data-preloader', data.preloader)
   document.documentElement.setAttribute('data-sidebar-visibility', data.sidebarVisibility);
+  document.documentElement.setAttribute('data-theme-colors', data.layoutThemeColor)
+  document.documentElement.setAttribute('data-layout-style', data.sidebarView);
+  document.documentElement.setAttribute('data-sidebar-image', data.sidebarImage);
+  document.documentElement.setAttribute('data-body-image', data.backgroundImage);
 }
