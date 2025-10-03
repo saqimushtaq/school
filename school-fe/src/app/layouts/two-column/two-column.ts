@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-twocolumn',
+  selector: 'app-two-column',
   imports: [],
-  templateUrl: './twocolumn.html',
+  templateUrl: './two-column.html',
   styles: ``
 })
-export class Twocolumn {
+export class TwoColumn {
 
 }

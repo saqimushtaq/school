@@ -50,11 +50,11 @@ export const LayoutStore = signalStore(
     setLayoutType(type: LayoutType) {
       patchState(store, { layoutType: type });
     },
-    setLayoutThemeColor(color: LayoutThemeColor){
-      patchState(store, {layoutThemeColor: color})
+    setLayoutThemeColor(color: LayoutThemeColor) {
+      patchState(store, { layoutThemeColor: color })
     },
-    setLayoutTheme(theme: LayoutTheme){
-      patchState(store, {layoutTheme: theme})
+    setLayoutTheme(theme: LayoutTheme) {
+      patchState(store, { layoutTheme: theme })
     },
     setLayoutMode(mode: LayoutMode) {
       patchState(store, { layoutMode: mode });
@@ -96,6 +96,7 @@ export const LayoutStore = signalStore(
     isTwoColumn: () => store.layoutType() === 'twocolumn',
     isHorizontal: () => store.layoutType() === 'horizontal',
     isVertical: () => store.layoutType() === 'vertical',
+    isSemibox: () => store.layoutType() === 'semibox',
     hasBoxedWidth: () => store.layoutWidth() === 'boxed',
     isFixed: () => store.layoutPosition() === 'fixed',
     isTopbarDark: () => store.topbarColor() === 'dark',
@@ -110,8 +111,28 @@ export const LayoutStore = signalStore(
     onInit(store) {
       // persist changes
       effect(() => {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(getState(store)));
+        const state = getState(store)
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        applyDomAttributes(state)
       });
     },
   })
 );
+
+
+function applyDomAttributes(data: LayoutState) {
+  document.documentElement.setAttribute('data-layout', data.layoutType);
+
+  document.documentElement.setAttribute('data-theme', data.layoutTheme);
+  document.documentElement.setAttribute('data-theme-colors', data.layoutThemeColor);
+  document.documentElement.setAttribute('data-bs-theme', data.layoutMode);
+  document.documentElement.setAttribute('data-layout-width', data.layoutWidth);
+  document.documentElement.setAttribute('data-layout-position', data.layoutPosition);
+  document.documentElement.setAttribute('data-topbar', data.topbarColor);
+  data.layoutType == "vertical" || data.layoutType == "twocolumn" ? document.documentElement.setAttribute('data-sidebar', data.sidebarColor) : '';
+  data.layoutType == "vertical" || data.layoutType == "twocolumn" ? document.documentElement.setAttribute('data-sidebar-size', data.sidebarSize) : '';
+  data.layoutType == "vertical" || data.layoutType == "twocolumn" ? document.documentElement.setAttribute('data-sidebar-image', data.sidebarImage) : '';
+  data.layoutType == "vertical" || data.layoutType == "twocolumn" ? document.documentElement.setAttribute('data-layout-style', data.sidebarView) : '';
+  document.documentElement.setAttribute('data-preloader', data.preloader)
+  document.documentElement.setAttribute('data-sidebar-visibility', data.sidebarVisibility);
+}
