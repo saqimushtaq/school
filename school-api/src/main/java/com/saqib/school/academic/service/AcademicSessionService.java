@@ -11,6 +11,7 @@ import com.saqib.school.common.exception.BadRequestException;
 import com.saqib.school.common.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,9 +58,15 @@ public class AcademicSessionService {
   }
 
   @Transactional(readOnly = true)
-  public PageResponse<AcademicSessionResponse> getAllSessions(Pageable pageable) {
-    var sessionPage = sessionRepository.findAll(pageable).map(sessionMapper::toResponse);
-    return PageResponse.from(sessionPage);
+  public PageResponse<AcademicSessionResponse> getAllSessions(Pageable pageable, String search) {
+    Page<AcademicSession> sessionPage;
+    if (search != null && !search.isBlank()) {
+      sessionPage = sessionRepository.findBySessionNameContainingIgnoreCase(search, pageable);
+    } else {
+      sessionPage = sessionRepository.findAll(pageable);
+    }
+    var mapped = sessionPage.map(sessionMapper::toResponse);
+    return PageResponse.from(mapped);
   }
 
   @Transactional(readOnly = true)
@@ -115,10 +122,6 @@ public class AcademicSessionService {
   public void activateSession(Long id) {
     AcademicSession session = findSessionById(id);
 
-    if (!session.canBeActivated()) {
-      throw new BadRequestException("Session cannot be activated. Current status: " + session.getStatus());
-    }
-
     // Ensure only one active session exists
     long activeSessionCount = sessionRepository.countByStatus(AcademicSession.SessionStatus.ACTIVE);
     if (activeSessionCount > 0) {
@@ -144,21 +147,6 @@ public class AcademicSessionService {
     sessionRepository.save(session);
 
     log.info("Academic session deactivated: {}", session.getSessionName());
-  }
-
-  @Transactional
-  @Auditable(action = "ARCHIVE_SESSION", entityType = "AcademicSession")
-  public void archiveSession(Long id) {
-    AcademicSession session = findSessionById(id);
-
-    if (!session.canBeArchived()) {
-      throw new BadRequestException("Session cannot be archived. Current status: " + session.getStatus());
-    }
-
-    session.setStatus(AcademicSession.SessionStatus.ARCHIVED);
-    sessionRepository.save(session);
-
-    log.info("Academic session archived: {}", session.getSessionName());
   }
 
   @Transactional

@@ -36,13 +36,15 @@ export class AcademicSessionService {
     page: number = 0,
     size: number = 10,
     sortBy: string = 'sessionName',
-    sortDir: string = 'asc'
+    sortDir: string = 'asc',
+    search: string = '',
   ): Observable<PageResponse<AcademicSessionResponse>> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString())
       .set('sortBy', sortBy)
-      .set('sortDir', sortDir);
+      .set('sortDir', sortDir)
+      .set('search', search);
 
     return this.http.get<PageResponse<AcademicSessionResponse>>(
       this.apiUrl,

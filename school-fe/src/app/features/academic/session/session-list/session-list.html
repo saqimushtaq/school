@@ -48,9 +48,8 @@
                 type="text"
                 name="searchTerm"
                 class="form-control"
-                placeholder="Search for session, email, phone, status or something..."
+                placeholder="Search for session..."
                 [(ngModel)]="searchTerm"
-                (ngModelChange)="performSearch()"
               />
               <i class="ri-search-line search-icon"></i>
             </div>
@@ -97,28 +96,35 @@
                   <td>
                     <ngb-highlight
                       [result]="session.sessionName"
-                      [term]="searchTerm"
+                      [term]="searchTerm()"
                     >
                     </ngb-highlight>
                   </td>
                   <td>
                     <ngb-highlight
                       [result]="session.startDate | date: 'longDate'"
-                      [term]="searchTerm"
+                      [term]="searchTerm()"
                     >
                     </ngb-highlight>
                   </td>
                   <td>
                     <ngb-highlight
                       [result]="session.endDate  | date: 'longDate'"
-                      [term]="searchTerm"
+                      [term]="searchTerm()"
                     >
                     </ngb-highlight>
                   </td>
                   <td class="status">
                     <span
                       class="badge text-uppercase"
-                      [class.bg-success-subtle.text-success]="session.status === 'ACTIVE'"
+                      [class.bg-success-subtle]="session.status === 'ACTIVE'"
+                      [class.text-success]="session.status === 'ACTIVE'"
+                      [class.text-primary]="session.status === 'UPCOMING'"
+                      [class.bg-primary-subtle]="session.status === 'UPCOMING'"
+                      [class.text-secondary]="session.status === 'INACTIVE'"
+                      [class.bg-secondary-subtle]="session.status === 'INACTIVE'"
+                      [class.text-warning]="session.status === 'ARCHIVED'"
+                      [class.bg-warning-subtle]="session.status === 'ARCHIVED'"
                       >{{session.status}}</span
                     >
                   </td>
@@ -139,6 +145,7 @@
                         </a>
                       </li>
                       <li
+                        href="javascript:void(0);"
                         class="list-inline-item me-0"
                         ngbTooltip="Remove"
                         placement="top"
@@ -146,11 +153,42 @@
                         <a
                           class="text-danger d-inline-block remove-item-btn"
                           data-bs-toggle="modal"
-                          data-bs-target="#deleteRecordModal"
+                          (click)="onDelete(session)"
                         >
                           <i class="ri-delete-bin-5-fill fs-16"></i>
                         </a>
                       </li>
+                      @if(session.status === 'INACTIVE' || session.status === 'UPCOMING'){
+                      <li
+                        href="javascript:void(0);"
+                        class="list-inline-item me-0"
+                        ngbTooltip="Remove"
+                        placement="top"
+                      >
+                        <a
+                          class="btn btn-sm btn-soft-success d-inline-block remove-item-btn"
+                          data-bs-toggle="modal"
+                          (click)="activate(session)"
+                        >
+                          Activate
+                        </a>
+                      </li>
+                      }@else if(session.status === 'ACTIVE'){
+                      <li
+                        href="javascript:void(0);"
+                        class="list-inline-item me-0"
+                        ngbTooltip="Remove"
+                        placement="top"
+                      >
+                        <a
+                          class="btn btn-sm btn-soft-warning text-dark d-inline-block remove-item-btn"
+                          data-bs-toggle="modal"
+                          (click)="deactivate(session)"
+                        >
+                          Deactivate
+                        </a>
+                      </li>
+                      }
                     </ul>
                   </td>
                 </tr>

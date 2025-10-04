@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import lottie from "lottie-web";
+import { defineElement } from "@lordicon/element";
 
 @Component({
   selector: 'app-root',
@@ -9,4 +11,7 @@ import { RouterOutlet } from '@angular/router';
 })
 export class App {
   protected title = 'school-fe';
+  constructor(){
+    defineElement()
+  }
 }

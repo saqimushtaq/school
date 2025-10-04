@@ -57,14 +57,15 @@ public class AcademicSessionController {
     public ResponseEntity<ApiResponse<PageResponse<AcademicSessionResponse>>> getAllSessions(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "sessionName") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDir) {
+            @RequestParam(defaultValue = "status") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir,
+            @RequestParam(required = false) String search) {
 
         Sort sort = sortDir.equalsIgnoreCase("desc") ?
                 Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        PageResponse<AcademicSessionResponse> response = sessionService.getAllSessions(pageable);
+        PageResponse<AcademicSessionResponse> response = sessionService.getAllSessions(pageable, search);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
@@ -122,14 +123,6 @@ public class AcademicSessionController {
     public ResponseEntity<ApiResponse<String>> deactivateSession(@PathVariable Long id) {
         sessionService.deactivateSession(id);
         return ResponseEntity.ok(ApiResponse.success("Academic session deactivated successfully"));
-    }
-
-    @PutMapping("/{id}/archive")
-    @PreAuthorize("hasRole('PRINCIPAL')")
-    @Operation(summary = "Archive session")
-    public ResponseEntity<ApiResponse<String>> archiveSession(@PathVariable Long id) {
-        sessionService.archiveSession(id);
-        return ResponseEntity.ok(ApiResponse.success("Academic session archived successfully"));
     }
 
     @DeleteMapping("/{id}")

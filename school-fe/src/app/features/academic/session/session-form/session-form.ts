@@ -22,10 +22,11 @@ export class SessionForm implements OnInit {
     sessionName: ['', [Validators.required]],
     startDate: ['', [Validators.required]],
     endDate: ['', [Validators.required]],
+
   })
 
   ngOnInit(): void {
-    if(this.session){
+    if (this.session) {
       this.form.patchValue(this.session)
       this.isEdit = true
     }
@@ -33,12 +34,24 @@ export class SessionForm implements OnInit {
 
   save() {
     this.submitted = true;
-    if(this.form.invalid){
+    if (this.form.invalid) {
       this.form.markAllAsTouched();
       return
     }
 
-    this.store.createSession(this.form.value)
+    if (this.isEdit && this.session?.id) {
+      this.store.updateSession({ id: this.session.id, request: this.form.value })
+    } else {
+      this.store.createSession({
+        request: this.form.value,
+        onSuccess: () => {
+          this.form.reset();
+          this.session = null;
+          this.modal.close('success')
+        }
+      })
+    }
+
   }
 
   get f() {

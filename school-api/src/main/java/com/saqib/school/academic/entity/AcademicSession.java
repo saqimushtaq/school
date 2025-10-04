@@ -17,33 +17,25 @@ import java.util.Set;
 @SuperBuilder
 public class AcademicSession extends BaseEntity {
 
-    @Column(name = "session_name", nullable = false, unique = true, length = 50)
-    private String sessionName;
+  @Column(name = "session_name", nullable = false, unique = true, length = 50)
+  private String sessionName;
 
-    @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
+  @Column(name = "start_date", nullable = false)
+  private LocalDate startDate;
 
-    @Column(name = "end_date", nullable = false)
-    private LocalDate endDate;
+  @Column(name = "end_date", nullable = false)
+  private LocalDate endDate;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    @Builder.Default
-    private SessionStatus status = SessionStatus.UPCOMING;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  @Builder.Default
+  private SessionStatus status = SessionStatus.UPCOMING;
 
-    @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<SchoolClass> classes;
+  @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private Set<SchoolClass> classes;
 
-    public enum SessionStatus {
-        UPCOMING, ACTIVE, INACTIVE, ARCHIVED
-    }
-
-  // Business logic helper methods
-  public boolean canBeActivated() {
-    return status == SessionStatus.UPCOMING;
+  public enum SessionStatus {
+    UPCOMING, ACTIVE, INACTIVE
   }
 
-  public boolean canBeArchived() {
-    return status == SessionStatus.INACTIVE;
-  }
 }

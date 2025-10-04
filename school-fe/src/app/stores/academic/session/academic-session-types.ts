@@ -3,7 +3,7 @@
 import { defaultPagination, Pagination } from "../../common-types";
 
 export enum SessionStatus {
-  DRAFT = 'DRAFT',
+  INACTIVE = 'INACTIVE',
   ACTIVE = 'ACTIVE',
   UPCOMING = 'UPCOMING',
   ARCHIVED = 'ARCHIVED'

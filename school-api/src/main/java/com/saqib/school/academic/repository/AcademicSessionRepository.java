@@ -15,6 +15,8 @@ public interface AcademicSessionRepository extends JpaRepository<AcademicSession
 
   Optional<AcademicSession> findBySessionName(String sessionName);
 
+  Page<AcademicSession> findAllByOrderByStatusDesc(Pageable pageable);
+
   boolean existsBySessionName(String sessionName);
 
   @Query("SELECT s FROM AcademicSession s WHERE s.status = :status")
@@ -28,4 +30,6 @@ public interface AcademicSessionRepository extends JpaRepository<AcademicSession
 
   @Query("SELECT COUNT(s) FROM AcademicSession s WHERE s.status = :status")
   long countByStatus(@Param("status") AcademicSession.SessionStatus status);
+
+  Page<AcademicSession> findBySessionNameContainingIgnoreCase(String search, Pageable pageable);
 }

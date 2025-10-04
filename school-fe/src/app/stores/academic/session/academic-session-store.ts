@@ -44,11 +44,12 @@ export const AcademicSessionStore = signalStore(
       size?: number;
       sortBy?: string;
       sortDir?: string;
+      search?: string;
     }>(
       pipe(
         tap(() => patchState(store, { isLoading: true, error: null })),
-        switchMap(({ page = 0, size = 10, sortBy = 'sessionName', sortDir = 'asc' }) =>
-          sessionService.getAllSessions(page, size, sortBy, sortDir).pipe(
+        switchMap(({ page = 0, size = 10, sortBy = 'sessionName', sortDir = 'asc', search = '' }) =>
+          sessionService.getAllSessions(page, size, sortBy, sortDir, search).pipe(
             tapResponse({
               next: (response) => {
                 patchState(store, {
@@ -175,10 +176,10 @@ export const AcademicSessionStore = signalStore(
     ),
 
     // Create session
-    createSession: rxMethod<AcademicSessionRequest>(
+    createSession: rxMethod<{request: AcademicSessionRequest, onSuccess?: () => void}>(
       pipe(
         tap(() => patchState(store, { isLoading: true, error: null })),
-        switchMap((request) =>
+        switchMap(({request, onSuccess}) =>
           sessionService.createSession(request).pipe(
             tapResponse({
               next: (response) => {
@@ -187,6 +188,7 @@ export const AcademicSessionStore = signalStore(
                     sessions: [response, ...currentSessions],
                     isLoading: false,
                   });
+                  onSuccess?.()
               },
               error: (error: any) => {
                 patchState(store, {
@@ -272,7 +274,7 @@ export const AcademicSessionStore = signalStore(
               next: (response) => {
                 const updatedSessions = store.sessions().map((session) =>
                     session.id === id
-                      ? { ...session, status: SessionStatus.DRAFT }
+                      ? { ...session, status: SessionStatus.INACTIVE }
                       : session
                   );
                   patchState(store, {
