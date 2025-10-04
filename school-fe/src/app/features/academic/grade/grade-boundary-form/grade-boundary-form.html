@@ -1,0 +1,118 @@
+<div class="modal-header bg-light p-3">
+  <h5 class="modal-title" id="exampleModalLabel">
+    {{isEdit ? 'Edit' : 'Add'}} Grade Boundary
+  </h5>
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="modal"
+    aria-label="Close"
+    id="close-modal"
+    (click)="modal.dismiss('Cross click')"
+  ></button>
+</div>
+<form
+  (ngSubmit)="save()"
+  [formGroup]="form"
+  class="tablelist-form"
+  autocomplete="off"
+>
+  <div class="modal-body">
+    <div class="mb-3">
+      <label for="grade-field" class="form-label">Grade</label>
+      <input
+        type="text"
+        id="grade-field"
+        class="form-control"
+        placeholder="Enter Grade (e.g., A+, B, C)"
+        required
+        formControlName="grade"
+        [class.is-invalid]="submitted && f['grade'].errors"
+      />
+      <div class="invalid-feedback">Please enter a grade.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="min-percentage-field" class="form-label">Minimum Percentage</label>
+      <input
+        type="number"
+        id="min-percentage-field"
+        class="form-control"
+        placeholder="Enter Minimum Percentage"
+        required
+        min="0"
+        max="100"
+        step="0.01"
+        formControlName="minPercentage"
+        [class.is-invalid]="submitted && f['minPercentage'].errors"
+      />
+      <div class="invalid-feedback">
+        @if(f['minPercentage'].errors?.['required']) {
+          Please enter minimum percentage.
+        }
+        @if(f['minPercentage'].errors?.['min']) {
+          Minimum percentage must be at least 0.
+        }
+        @if(f['minPercentage'].errors?.['max']) {
+          Minimum percentage cannot exceed 100.
+        }
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="max-percentage-field" class="form-label">Maximum Percentage</label>
+      <input
+        type="number"
+        id="max-percentage-field"
+        class="form-control"
+        placeholder="Enter Maximum Percentage"
+        required
+        min="0"
+        max="100"
+        step="0.01"
+        formControlName="maxPercentage"
+        [class.is-invalid]="submitted && f['maxPercentage'].errors"
+      />
+      <div class="invalid-feedback">
+        @if(f['maxPercentage'].errors?.['required']) {
+          Please enter maximum percentage.
+        }
+        @if(f['maxPercentage'].errors?.['min']) {
+          Maximum percentage must be at least 0.
+        }
+        @if(f['maxPercentage'].errors?.['max']) {
+          Maximum percentage cannot exceed 100.
+        }
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <div class="form-check form-switch">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="is-passing-field"
+          formControlName="isPassing"
+        />
+        <label class="form-check-label" for="is-passing-field">
+          Is Passing Grade
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="hstack gap-2 justify-content-end">
+      <button
+        type="button"
+        class="btn btn-light"
+        data-bs-dismiss="modal"
+        (click)="modal.close('Close click')"
+      >
+        Close
+      </button>
+      <button type="submit" class="btn btn-success" id="add-btn">
+        {{isEdit ? 'Update' : 'Add'}} Grade Boundary
+      </button>
+    </div>
+  </div>
+</form>

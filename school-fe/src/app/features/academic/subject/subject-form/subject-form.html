@@ -1,0 +1,78 @@
+<div class="modal-header bg-light p-3">
+  <h5 class="modal-title" id="exampleModalLabel">
+    {{isEdit ? 'Edit' : 'Add'}} Subject
+  </h5>
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="modal"
+    aria-label="Close"
+    id="close-modal"
+    (click)="modal.dismiss('Cross click')"
+  ></button>
+</div>
+<form
+  (ngSubmit)="save()"
+  [formGroup]="form"
+  class="tablelist-form"
+  autocomplete="off"
+>
+  <div class="modal-body">
+    <div class="mb-3">
+      <label for="subjectname-field" class="form-label">Subject Name</label>
+      <input
+        type="text"
+        id="subjectname-field"
+        class="form-control"
+        placeholder="Enter Subject Name"
+        required
+        formControlName="subjectName"
+        [class.is-invalid]="submitted && f['subjectName'].errors"
+      />
+      <div class="invalid-feedback">Please enter a subject name.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="subjectcode-field" class="form-label">Subject Code</label>
+      <input
+        type="text"
+        id="subjectcode-field"
+        class="form-control"
+        placeholder="Enter Subject Code"
+        required
+        formControlName="subjectCode"
+        [class.is-invalid]="submitted && f['subjectCode'].errors"
+      />
+      <div class="invalid-feedback">Please enter a subject code.</div>
+    </div>
+
+    <div class="mb-3">
+      <div class="form-check form-switch">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="isactive-field"
+          formControlName="isActive"
+        />
+        <label class="form-check-label" for="isactive-field">
+          Active Status
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="hstack gap-2 justify-content-end">
+      <button
+        type="button"
+        class="btn btn-light"
+        data-bs-dismiss="modal"
+        (click)="modal.close('Close click')"
+      >
+        Close
+      </button>
+      <button type="submit" class="btn btn-success" id="add-btn">
+        {{isEdit ? 'Update' : 'Add'}} Subject
+      </button>
+    </div>
+  </div>
+</form>

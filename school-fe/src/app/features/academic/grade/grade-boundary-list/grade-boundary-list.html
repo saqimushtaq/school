@@ -1,0 +1,207 @@
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs
+  title="Grade Boundaries"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+<!-- End Breadcrumbs -->
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card" id="gradeBoundaryList">
+      <div class="card-header border-bottom-dashed">
+        <div class="row g-4 align-items-center">
+          <div class="col-sm">
+            <div>
+              <h5 class="card-title mb-0">Grade Boundary List</h5>
+            </div>
+          </div>
+          <div class="col-sm-auto">
+            <div class="d-flex flex-wrap align-items-start gap-2">
+              <button
+                type="button"
+                class="btn btn-success add-btn"
+                data-bs-toggle="modal"
+                id="create-btn"
+                (click)="openModal()"
+              >
+                <i class="ri-add-line align-bottom me-1"></i> Add Grade Boundary
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                (click)="setupDefaults()"
+              >
+                <i class="ri-settings-3-line align-bottom me-1"></i> Setup Defaults
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body border-bottom-dashed border-bottom">
+        <div class="row g-3">
+          <div class="col-xl-6">
+            <div class="search-box">
+              <input
+                type="text"
+                name="searchTerm"
+                class="form-control"
+                placeholder="Search for grade..."
+                [(ngModel)]="searchTerm"
+              />
+              <i class="ri-search-line search-icon"></i>
+            </div>
+          </div>
+          <!--end col-->
+        </div>
+        <!--end row-->
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="table-responsive table-card mb-1">
+            <table class="table align-middle">
+              <thead class="table-light text-muted">
+                <tr>
+                  <th scope="col" style="width: 50px">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="checkAll"
+                        value="option"
+                      />
+                    </div>
+                  </th>
+                  <th>Grade</th>
+                  <th>Min %</th>
+                  <th>Max %</th>
+                  <th>Range</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for(boundary of filteredBoundaries(); track boundary.id){
+                <tr id="gb_{{boundary.id}}">
+                  <th scope="row">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        name="checkAll"
+                      />
+                    </div>
+                  </th>
+                  <td>
+                    <span class="fw-semibold fs-5">
+                      <ngb-highlight
+                        [result]="boundary.grade"
+                        [term]="searchTerm()"
+                      >
+                      </ngb-highlight>
+                    </span>
+                  </td>
+                  <td>
+                    <ngb-highlight
+                      [result]="boundary.minPercentage.toString()"
+                      [term]="searchTerm()"
+                    >
+                    </ngb-highlight>%
+                  </td>
+                  <td>
+                    <ngb-highlight
+                      [result]="boundary.maxPercentage.toString()"
+                      [term]="searchTerm()"
+                    >
+                    </ngb-highlight>%
+                  </td>
+                  <td>
+                    <div class="progress" style="height: 6px;">
+                      <div
+                        class="progress-bar"
+                        [class.bg-success]="boundary.isPassing"
+                        [class.bg-danger]="!boundary.isPassing"
+                        role="progressbar"
+                        [style.width.%]="boundary.maxPercentage"
+                        [attr.aria-valuenow]="boundary.maxPercentage"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      ></div>
+                    </div>
+                    <small class="text-muted">
+                      {{boundary.minPercentage}}% - {{boundary.maxPercentage}}%
+                    </small>
+                  </td>
+                  <td>
+                    <span
+                      class="badge text-uppercase"
+                      [class.bg-success-subtle]="boundary.isPassing"
+                      [class.text-success]="boundary.isPassing"
+                      [class.bg-danger-subtle]="!boundary.isPassing"
+                      [class.text-danger]="!boundary.isPassing"
+                    >
+                      {{boundary.isPassing ? 'PASSING' : 'FAILING'}}
+                    </span>
+                  </td>
+                  <td>
+                    <ul class="list-inline hstack gap-2 mb-0">
+                      <li
+                        class="list-inline-item edit"
+                        ngbTooltip="Edit"
+                        placement="top"
+                      >
+                        <a
+                          href="javascript:void(0);"
+                          data-bs-toggle="modal"
+                          class="text-primary d-inline-block edit-item-btn"
+                          (click)="openModal(boundary)"
+                        >
+                          <i class="ri-pencil-fill fs-16"></i>
+                        </a>
+                      </li>
+                      <li
+                        href="javascript:void(0);"
+                        class="list-inline-item me-0"
+                        ngbTooltip="Remove"
+                        placement="top"
+                      >
+                        <a
+                          class="text-danger d-inline-block remove-item-btn"
+                          data-bs-toggle="modal"
+                          (click)="onDelete(boundary)"
+                        >
+                          <i class="ri-delete-bin-5-fill fs-16"></i>
+                        </a>
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+                }
+                @if(filteredBoundaries().length === 0) {
+                <tr>
+                  <td colspan="7" class="text-center py-4">
+                    <div class="text-muted">
+                      <i class="ri-information-line fs-20 align-middle me-2"></i>
+                      No grade boundaries found
+                    </div>
+                  </td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div
+          id="elmLoader"
+          [style.opacity]="store.isLoading() ? 1 : 0"
+          [style.visibility]="store.isLoading() ? 'visible' : 'hidden'"
+        >
+          <div class="spinner-border text-primary avatar-sm" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--end col-->
+</div>
+<!--end row-->

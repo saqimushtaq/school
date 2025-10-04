@@ -25,7 +25,11 @@
       "TEXT": "Academic",
       "LIST": {
         "SESSIONS": "Sessions",
-        "CLASSES": "Classes"      }
+        "CLASSES": "Classes",
+        "SUBJECTS": "Subjects",
+        "CLASSSUBJECTS": "Class Subjects",
+        "GRADEBOUNDARY": "Grade Boundary"
+      }
     },
     "APPS": {
       "TEXT": "Apps",

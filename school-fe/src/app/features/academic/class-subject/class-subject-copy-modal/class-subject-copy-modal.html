@@ -1,0 +1,70 @@
+<div class="modal-header bg-light p-3">
+  <h5 class="modal-title">Copy Subjects Between Classes</h5>
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="modal"
+    aria-label="Close"
+    (click)="modal.dismiss('Cross click')"
+  ></button>
+</div>
+<form
+  (ngSubmit)="copy()"
+  [formGroup]="form"
+  class="tablelist-form"
+  autocomplete="off"
+>
+  <div class="modal-body">
+    <div class="mb-3">
+      <label for="source-class-field" class="form-label">Source Class</label>
+      <select
+        id="source-class-field"
+        class="form-select"
+        formControlName="sourceClassId"
+        [class.is-invalid]="submitted && f['sourceClassId'].errors"
+      >
+        <option value="">Select Source Class</option>
+        @for(class of classes(); track class.id){
+        <option [value]="class.id">{{class.className}} - {{class.section}}</option>
+        }
+      </select>
+      <div class="invalid-feedback">Please select source class.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="target-class-field" class="form-label">Target Class</label>
+      <select
+        id="target-class-field"
+        class="form-select"
+        formControlName="targetClassId"
+        [class.is-invalid]="submitted && f['targetClassId'].errors"
+      >
+        <option value="">Select Target Class</option>
+        @for(class of classes(); track class.id){
+        <option [value]="class.id">{{class.className}} - {{class.section}}</option>
+        }
+      </select>
+      <div class="invalid-feedback">Please select target class.</div>
+    </div>
+
+    <div class="alert alert-info">
+      <i class="ri-information-line me-2"></i>
+      This will copy all subjects from the source class to the target class with the same marks configuration.
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="hstack gap-2 justify-content-end">
+      <button
+        type="button"
+        class="btn btn-light"
+        data-bs-dismiss="modal"
+        (click)="modal.close('Close click')"
+      >
+        Close
+      </button>
+      <button type="submit" class="btn btn-info">
+        <i class="ri-file-copy-line me-1"></i> Copy Subjects
+      </button>
+    </div>
+  </div>
+</form>
