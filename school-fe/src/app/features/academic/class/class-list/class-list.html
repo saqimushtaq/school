@@ -1,0 +1,273 @@
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs
+  title="School Classes"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+<!-- End Breadcrumbs -->
+
+<div class="row">
+  <div class="col-lg-12">
+    <!-- Warning Alert when no active session -->
+    @if(!activeSession() && !sessionStore.isLoading()) {
+    <div class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show" role="alert">
+      <i class="ri-alert-line label-icon"></i>
+      <strong>Warning!</strong> No active session found. Please activate a session first to manage classes.
+    </div>
+    }
+
+    <div class="card" id="classList">
+      <div class="card-header border-bottom-dashed">
+        <div class="row g-4 align-items-center">
+          <div class="col-sm">
+            <div>
+              <h5 class="card-title mb-0">Class List</h5>
+            </div>
+          </div>
+          <div class="col-sm-auto">
+            <div class="d-flex flex-wrap align-items-start gap-2">
+              <button
+                class="btn btn-soft-danger"
+                id="remove-actions"
+                style="display: none"
+              >
+                <i class="ri-delete-bin-2-line"></i>
+              </button>
+              <button
+                type="button"
+                class="btn btn-success add-btn"
+                data-bs-toggle="modal"
+                id="create-btn"
+                (click)="openModal()"
+                [disabled]="!activeSession()"
+              >
+                <i class="ri-add-line align-bottom me-1"></i> Add Class
+              </button>
+              <button type="button" class="btn btn-info" [disabled]="!activeSession()">
+                <i class="ri-file-download-line align-bottom me-1"></i> Export
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body border-bottom-dashed border-bottom">
+        <div class="row g-3">
+          <div class="col-xl-6">
+            <div class="search-box">
+              <input
+                type="text"
+                name="searchTerm"
+                class="form-control"
+                placeholder="Search for class..."
+                [(ngModel)]="searchTerm"
+                [disabled]="!activeSession()"
+              />
+              <i class="ri-search-line search-icon"></i>
+            </div>
+          </div>
+          <div class="col-xl-6">
+            <select
+              class="form-select"
+              [ngModel]="selectedSessionId()"
+              (ngModelChange)="selectedSessionId.set($event)"
+              [disabled]="!activeSession()"
+            >
+
+              @for(session of sessions(); track session.id) {
+                <option [value]="session.id">
+                  {{session.sessionName}}
+                  @if(session.id === activeSession()?.id) {
+                    <span>(Active)</span>
+                  }
+                </option>
+              }
+            </select>
+          </div>
+          <!--end col-->
+        </div>
+        <!--end row-->
+      </div>
+      <div class="card-body">
+        @if(activeSession()) {
+        <div>
+          <div class="table-responsive table-card mb-1">
+            <table class="table">
+              <thead class="table-light text-muted">
+                <tr>
+                  <th scope="col" style="width: 50px">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="checkAll"
+                        value="option"
+                      />
+                    </div>
+                  </th>
+                  <th>Display Name</th>
+                  <th>Session</th>
+                  <th>Class Name</th>
+                  <th>Section</th>
+                  <th>Capacity</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                @if(filteredClasses().length === 0 && !store.isLoading()) {
+                  <tr>
+                    <td colspan="8" class="text-center py-4">
+                      <div class="text-muted">
+                        <i class="ri-information-line fs-20"></i>
+                        <p class="mt-2">No classes found for the selected session.</p>
+                      </div>
+                    </td>
+                  </tr>
+                }
+                @for(schoolClass of filteredClasses(); track schoolClass.id){
+                <tr id="c_{{schoolClass.id}}">
+                  <th scope="row">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        name="checkAll"
+                      />
+                    </div>
+                  </th>
+                  <td>
+                    <ngb-highlight
+                      [result]="schoolClass.displayName"
+                      [term]="searchTerm()"
+                    >
+                    </ngb-highlight>
+                  </td>
+                  <td>
+                    <ngb-highlight
+                      [result]="schoolClass.sessionName"
+                      [term]="searchTerm()"
+                    >
+                    </ngb-highlight>
+                  </td>
+                  <td>
+                    <ngb-highlight
+                      [result]="schoolClass.className"
+                      [term]="searchTerm()"
+                    >
+                    </ngb-highlight>
+                  </td>
+                  <td>
+                    <ngb-highlight
+                      [result]="schoolClass.section || '-'"
+                      [term]="searchTerm()"
+                    >
+                    </ngb-highlight>
+                  </td>
+                  <td>
+                    {{schoolClass.capacity || '-'}}
+                  </td>
+                  <td class="status">
+                    <span
+                      class="badge text-uppercase"
+                      [class.bg-success-subtle]="schoolClass.isActive"
+                      [class.text-success]="schoolClass.isActive"
+                      [class.text-danger]="!schoolClass.isActive"
+                      [class.bg-danger-subtle]="!schoolClass.isActive"
+                      >{{schoolClass.isActive ? 'ACTIVE' : 'INACTIVE'}}</span
+                    >
+                  </td>
+                  <td>
+                    <ul class="list-inline hstack gap-2 mb-0">
+                      <li
+                        class="list-inline-item edit"
+                        ngbTooltip="Edit"
+                        placement="top"
+                      >
+                        <a
+                          href="javascript:void(0);"
+                          data-bs-toggle="modal"
+                          class="text-primary d-inline-block edit-item-btn"
+                          (click)="openModal(schoolClass)"
+                        >
+                          <i class="ri-pencil-fill fs-16"></i>
+                        </a>
+                      </li>
+                      <li
+                        href="javascript:void(0);"
+                        class="list-inline-item me-0"
+                        ngbTooltip="Remove"
+                        placement="top"
+                      >
+                        <a
+                          class="text-danger d-inline-block remove-item-btn"
+                          data-bs-toggle="modal"
+                          (click)="onDelete(schoolClass)"
+                        >
+                          <i class="ri-delete-bin-5-fill fs-16"></i>
+                        </a>
+                      </li>
+                      @if(!schoolClass.isActive){
+                      <li
+                        href="javascript:void(0);"
+                        class="list-inline-item me-0"
+                        ngbTooltip="Activate"
+                        placement="top"
+                      >
+                        <a
+                          class="btn btn-sm btn-soft-success d-inline-block"
+                          data-bs-toggle="modal"
+                          (click)="activate(schoolClass)"
+                        >
+                          Activate
+                        </a>
+                      </li>
+                      }@else{
+                      <li
+                        href="javascript:void(0);"
+                        class="list-inline-item me-0"
+                        ngbTooltip="Deactivate"
+                        placement="top"
+                      >
+                        <a
+                          class="btn btn-sm btn-soft-warning text-dark d-inline-block"
+                          data-bs-toggle="modal"
+                          (click)="deactivate(schoolClass)"
+                        >
+                          Deactivate
+                        </a>
+                      </li>
+                      }
+                    </ul>
+                  </td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          <app-pagination
+            [page]="store.pagination().page + 1"
+            [pageSize]="store.pagination().size"
+            [totalElements]="store.pagination().totalElements"
+            (pageChange)="onPageChange($event)"
+          />
+        </div>
+        } @else {
+          <div class="text-center py-5">
+            <i class="ri-alert-line fs-1 text-warning"></i>
+            <p class="text-muted mt-3">Please activate a session to view and manage classes.</p>
+          </div>
+        }
+        <div
+          id="elmLoader"
+          [style.opacity]="store.isLoading() ? 1 : 0"
+          [style.visibility]="store.isLoading() ? 'visible' : 'hidden'"
+        >
+          <div class="spinner-border text-primary avatar-sm" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--end col-->
+</div>
+<!--end row-->

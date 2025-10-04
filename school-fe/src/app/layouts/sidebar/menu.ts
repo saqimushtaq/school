@@ -78,36 +78,11 @@ export const MENU: MenuItem[] = [
       },
       {
         id: 11,
-        label: 'MENUITEMS.APPS.LIST.EMAIL',
-        parentId: 8,
-        subItems: [
-          {
-            id: 13,
-            label: 'MENUITEMS.APPS.LIST.MAILBOX',
-            link: '/mailbox',
-            parentId: 11
-          },
-          {
-            id: 14,
-            label: 'MENUITEMS.APPS.LIST.MAILTEMPLATES',
-            parentId: 11,
-            subItems: [
-              {
-                id: 13,
-                label: 'MENUITEMS.APPS.LIST.BASICACTION',
-                link: '/email-basic',
-                parentId: 14
-              },
-              {
-                id: 13,
-                label: 'MENUITEMS.APPS.LIST.ECOMMERCEACTION',
-                link: '/email-ecommerce',
-                parentId: 14
-              },
-            ]
-          }
-        ]
+        label: 'MENUITEMS.ACADEMIC.LIST.CLASSES',
+        link: '/academic/classes',
+        parentId: 8
       },
+
       {
         id: 12,
         label: 'MENUITEMS.APPS.LIST.ECOMMERCE',

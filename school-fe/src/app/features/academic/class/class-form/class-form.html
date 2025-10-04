@@ -1,0 +1,92 @@
+<div class="modal-header bg-light p-3">
+  <h5 class="modal-title" id="exampleModalLabel">
+    {{isEdit ? 'Edit' : 'Add'}} Class
+  </h5>
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="modal"
+    aria-label="Close"
+    id="close-modal"
+    (click)="modal.dismiss('Cross click')"
+  ></button>
+</div>
+<form
+  (ngSubmit)="save()"
+  [formGroup]="form"
+  class="tablelist-form"
+  autocomplete="off"
+>
+  <div class="modal-body">
+    <div class="mb-3">
+      <label for="session-field" class="form-label">Session</label>
+      <select
+        id="session-field"
+        class="form-select"
+        formControlName="sessionId"
+        [class.is-invalid]="submitted && f['sessionId'].errors"
+      >
+        <option value="">Select Session</option>
+        @for(session of sessions(); track session.id) {
+          <option [value]="session.id">{{session.sessionName}}</option>
+        }
+      </select>
+      <div class="invalid-feedback">Please select a session.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="classname-field" class="form-label">Class Name</label>
+      <input
+        type="text"
+        id="classname-field"
+        class="form-control"
+        placeholder="Enter Class Name"
+        required
+        formControlName="className"
+        [class.is-invalid]="submitted && f['className'].errors"
+      />
+      <div class="invalid-feedback">Please enter a class name.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="section-field" class="form-label">Section</label>
+      <input
+        type="text"
+        id="section-field"
+        class="form-control"
+        placeholder="Enter Section (Optional)"
+        formControlName="section"
+        [class.is-invalid]="submitted && f['section'].errors"
+      />
+      <div class="invalid-feedback">Section must not exceed 10 characters.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="capacity-field" class="form-label">Capacity</label>
+      <input
+        type="number"
+        id="capacity-field"
+        class="form-control"
+        placeholder="Enter Capacity"
+        formControlName="capacity"
+        [class.is-invalid]="submitted && f['capacity'].errors"
+      />
+      <div class="invalid-feedback">Please enter a valid capacity (minimum 1).</div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="hstack gap-2 justify-content-end">
+      <button
+        type="button"
+        class="btn btn-light"
+        data-bs-dismiss="modal"
+        (click)="modal.close('Close click')"
+      >
+        Close
+      </button>
+      <button type="submit" class="btn btn-success" id="add-btn">
+        {{isEdit ? 'Update' : 'Add'}} Class
+      </button>
+    </div>
+  </div>
+</form>

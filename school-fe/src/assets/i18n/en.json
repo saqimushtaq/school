@@ -24,8 +24,8 @@
     "ACADEMIC": {
       "TEXT": "Academic",
       "LIST": {
-        "SESSIONS": "Sessions"
-      }
+        "SESSIONS": "Sessions",
+        "CLASSES": "Classes"      }
     },
     "APPS": {
       "TEXT": "Apps",
